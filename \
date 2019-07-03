@@ -361,8 +361,7 @@ a:hover {
 }
 
 .commentSection .header .commentForm .profilePicture,
-.commentSection .comment .profilePicture,
-.commentForm .profilePicture {
+.commentSection .comment .profilePicture {
     margin-right:16px;
     width:48px;
     height:48px;
@@ -374,7 +373,7 @@ a:hover {
 }
 
 .commentSection .commentForm,
-.itemContainer .commentForm {
+.itemContainer, .commentForm {
     display:flex;
 }
 
@@ -454,17 +453,4 @@ a:hover {
 
 .itemContainer .controls button {
     cursor:pointer;
-}
-
-.itemContainer .controls .likesCount {
-    margin: 0 5px;
-}
-
-.itemContainer .controls button img {
-    height:16px;
-}
-
-.itemContainer .commentForm .profilePicture {
-    width:30px;
-    height:30px;
 }
