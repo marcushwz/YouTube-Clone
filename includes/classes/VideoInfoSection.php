@@ -25,7 +25,7 @@ class VideoInfoSection {
                     <h1>$title</h1> 
                     <div class='bottomSection'>
                         <span class='viewCount'>
-                            $views 
+                            $views views
                         </span>
                         $controls
                     </div>
@@ -33,7 +33,40 @@ class VideoInfoSection {
     }
 
     private function createSecondaryInfo() {
-        
+
+        $description = $this->video->getDescription();
+        $uploadDate = $this->video->getUploadDate();
+        $uploadedBy = $this->video->getUploadedBy();
+        $profileButton = ButtonProvider::createUserProfileButton($this->con, $uploadedBy); 
+
+        if($uploadedBy == $this->userLoggedInObj->getUsername()) {
+            $actionButton = ButtonProvider::createEditVideoButton($this->video->getId());
+        }
+        else {
+            $userToObj = new User($this->con, $uploadedBy);
+            $actionButton = ButtonProvider::createSubscriberButton($this->con, $userToObj, $this->userLoggedInObj);
+        }
+
+        return "<div class='secondaryInfo'> 
+                    <div class='topRow'>
+                        $profileButton
+
+                        <div class='uploadInfo'>
+                            <span class='owner'>
+                                <a href='profile.php?username=$uploadedBy'>
+                                    $uploadedBy
+                                </a>
+                            </span>
+                            <span class='date'>
+                                Published on $uploadDate 
+                            </span>
+                        </div>
+                        $actionButton
+                    </div>
+                    <div class='descriptionContainer'>
+                        $description
+                    </div>
+                </div>";
     }
 }
 
