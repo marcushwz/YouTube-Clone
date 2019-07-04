@@ -22,13 +22,25 @@ class Comment {
     }
 
     public function create() {
+        $id = $this->sqlData["id"];
+        $videoId = $this->getVideoId();
         $body = $this->sqlData["body"];
         $postedBy = $this->sqlData["postedBy"];
         $profileButton = ButtonProvider::createUserProfileButton($this->con, $postedBy);
-        $timespan = ""; // To do: get timespan
+        $timespan = $this->time_elapsed_string($this->sqlData["datePosted"]);
 
         $commentControlsObj = new CommentControls($this->con, $this, $this->userLoggedInObj);
         $commentControls = $commentControlsObj->create();
+        $numResponses = $this->getNumberOfReplies();
+
+        if($numResponses > 0) {
+            $viewRepliesText ="<span class='repliesSection viewReplies' onclick='getReplies($id, this, $videoId)'>
+                                    View all $numResponses replies 
+                               </span>";
+        }
+        else {
+            $viewRepliesText = "<div class='repliesSection'></div>";
+        }
 
         return "<div class='itemContainer'>
                     <div class='comment'>
@@ -48,8 +60,47 @@ class Comment {
                     </div>
 
                     $commentControls
+                    $viewRepliesText
                 </div>";
 
+    }
+
+    public function getNumberOfReplies() {
+        $query = $this->con->prepare("SELECT count(*) FROM comments WHERE responseTo=:responseTo");
+        $query->bindParam(":responseTo", $id);
+        $id = $this->sqlData["id"];
+        $query->execute();
+
+        return $query->fetchColumn();
+    }
+
+    public function time_elapsed_string($datetime, $full = false) {
+        $now = new DateTime;
+        $ago = new DateTime($datetime);
+        $diff = $now->diff($ago);
+
+        $diff->w = floor($diff->d / 7);
+        $diff->d -= $diff->w * 7;
+
+        $string = array(
+            'y' => 'year',
+            'm' => 'month',
+            'w' => 'week',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+
+        if (!$full) $string = array_slice($string, 0, 1);
+        return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
 
     public function getId() {
@@ -105,6 +156,84 @@ class Comment {
         $numDislikes = $data["count"];
 
         return $numLikes - $numDislikes;
+    }
+
+    public function like() {
+        $id = $this->getId();
+        $username = $this->userLoggedInObj->getUsername();
+
+        if($this->wasLikedBy()) {
+            // User has already liked
+            $query = $this->con->prepare("DELETE FROM likes WHERE username=:un AND commentId=:commentId");
+            $query->bindParam(":un", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+
+            return -1;
+        }
+        else {
+            // User has not like
+            $query = $this->con->prepare("DELETE FROM dislikes WHERE username=:un AND commentId=:commentId");
+            $query->bindParam(":un", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+            $count = $query->rowCount();
+
+            $query = $this->con->prepare("INSERT INTO likes (username, commentId) VALUE(:username, :commentId)");
+            $query->bindParam(":username", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+
+            return 1+$count;
+        }
+
+    }
+
+    public function dislike() {
+        $id = $this->getId();
+        $username = $this->userLoggedInObj->getUsername();
+
+        if($this->wasDislikedBy()) {
+            // User has already disliked
+            $query = $this->con->prepare("DELETE FROM dislikes WHERE username=:un AND commentId=:commentId");
+            $query->bindParam(":un", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+
+            return 1;
+        }
+        else {
+            // User has not dislike
+            $query = $this->con->prepare("DELETE FROM likes WHERE username=:un AND commentId=:commentId");
+            $query->bindParam(":un", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+            $count = $query->rowCount();
+
+            $query = $this->con->prepare("INSERT INTO dislikes (username, commentId) VALUE(:username, :commentId)");
+            $query->bindParam(":username", $username);
+            $query->bindParam(":commentId", $id);
+            $query->execute();
+
+            return -1 - $count;
+        }
+
+    }
+
+    public function getReplies() {
+
+        $query = $this->con->prepare("SELECT * FROM comments WHERE responseTo=:commentId ORDER BY datePosted ASC");
+        $query->bindParam(":commentId", $id);
+        $id = $this->getId();
+        $query->execute();
+
+        $comments = "";
+        $videoId = $this->getVideoId();
+        while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $comment = new Comment($this->con, $row, $this->userLoggedInObj, $videoId);
+            $comments .= $comment->create();
+        }
+    return $comments;
     }
 }
 ?>
