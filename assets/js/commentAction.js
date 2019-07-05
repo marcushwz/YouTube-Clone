@@ -3,6 +3,8 @@
 function postComment(button, postedBy, videoId, replyTo, containerClass) {
     var textarea = $(button).siblings("textarea");
     var commentText = textarea.val();
+    var parent = $(button).closest(".itemContainer");
+    var commentForm = parent.find(".commentForm").first();
     textarea.val("");
 
     if(commentText) {
@@ -15,6 +17,7 @@ function postComment(button, postedBy, videoId, replyTo, containerClass) {
             }
             else {
                 $(button).parent().siblings("." + containerClass).append(comment);
+                commentForm.toggleClass("hidden");
             }
 
         });
@@ -91,11 +94,22 @@ function updateLikesValue(element, num) {
 }
 
 function getReplies(commentId, button, videoId) {
+    var hideReply = $(button).siblings(".hideReplies");
     $.post("ajax/getCommentReplies.php", {commentId: commentId, videoId: videoId})
     .done(function(comments) {
+
+        hideReply.toggleClass("hidden");
         var replies =$("<div>").addClass("repliesSection");
         replies.append(comments);
         $(button).replaceWith(replies);
 
     });
+}
+
+function hideReply(button) {
+
+    var hideReply = $(button).siblings(".repliesSection");
+
+    hideReply.toggleClass("hidden");
+    $(button).toggleClass("hidden");
 }
