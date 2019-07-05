@@ -34,7 +34,13 @@ class Comment {
         $numResponses = $this->getNumberOfReplies();
 
         if($numResponses > 0) {
-            $viewRepliesText ="<span class='repliesSection viewReplies' onclick='getReplies($id, this, $videoId)'>
+            $viewRepliesText ="<span class='repliesSection hideReplies hidden' onclick='hideReply(this)'>
+                                    Hide replies 
+                               </span>
+                               <span class='repliesSection showReplies hidden' onclick='hideReply(this)'>
+                                    View all $numResponses replies
+                               </span>
+                                <span class='repliesSection viewReplies' onclick='getReplies($id, this, $videoId)'>
                                     View all $numResponses replies 
                                </span>";
         }

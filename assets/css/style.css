@@ -487,7 +487,15 @@ a:hover {
     margin-top:16px;
 }
 
-.commentSection .itemContainer .viewReplies {
+.commentSection .itemContainer .viewReplies,
+.commentSection .itemContainer .hideReplies,
+.commentSection .itemContainer .showReplies {
+    cursor:pointer;
+    font-size: 14px;
+    font-weight:500;
+}
+
+.commentSection .itemContainer .hideReplies {
     cursor:pointer;
     font-size: 14px;
     font-weight:500;
@@ -504,6 +512,7 @@ a:hover {
 }
 
 .videoGridItem {
+    height:200px;
     margin-right:4px;
     margin-bottom:24px;
 }
@@ -572,3 +581,13 @@ a:hover {
     white-space:nowrap;
 }
     
+.videoSection .videoGridHeader {
+    display:flex;
+    margin: 10px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.videoGridHeader div {
+    flex:1;
+}
