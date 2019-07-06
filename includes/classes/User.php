@@ -42,8 +42,8 @@ class User {
         return $this->sqlData["profilePic"];
     }
 
-    public function getSignUpData() {
-        return $this->sqlData["signUpData"];
+    public function getSignUpDate() {
+        return $this->sqlData["signUpDate"];
     }
 
     public function isSubscribedTo($userTo) {
