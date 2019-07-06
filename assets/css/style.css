@@ -803,3 +803,38 @@ a:hover {
     margin-left:auto;
     margin-right:auto;
 }
+
+.editVideoContainer {
+    display:flex;
+    flex-direction:column;
+}
+
+.editVideoContainer .topSection {
+    display:flex;
+}
+
+.topSection .videoPlayer {
+    max-height:300px;
+    flex:1;
+}
+
+.editVideoContainer .topSection .thumbnailItemContainer {
+    display:flex;
+    flex-direction:column;
+    margin: 0 10px;
+    width:210px;
+}
+
+.editVideoContainer .topSection .thumbnailItemContainer .thumbnailItem {
+    margin-bottom:10px;
+    padding:2px;
+}
+
+.editVideoContainer .topSection .thumbnailItemContainer .thumbnailItem.selected {
+    border:3px solid #828282;
+}
+
+.editVideoContainer .topSection .thumbnailItemContainer .thumbnailItem img {
+    width:100%;
+    cursor:pointer;
+}
