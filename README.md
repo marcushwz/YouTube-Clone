@@ -1,7 +1,7 @@
 # YouTube-Clone
 This is a project aiming to create a YouTube-Clone using PHP, JavaScript and MySQL. The final product will contain the basic functionalities of YouTube such as 
 1. Creating an account
-2. Uploading videos 
+2. Uploading videos (Heroku has an "ephemeral" hard drive, therefore the video uploaded will not be there forever)
 3. Viewing videos
 4. Searching videos
 5. Subscribing to other users
