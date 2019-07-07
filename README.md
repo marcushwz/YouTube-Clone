@@ -9,6 +9,10 @@ This is a project aiming to create a YouTube-Clone using PHP, JavaScript and MyS
 
 This final product is deployed on heroku which can be access through this [link](https://marcus-tube.herokuapp.com).
 
+A sample look of the homepage is as shown below:
+
+![Home Page](youtube-clone.png)
+
 ## What I have learned
 1. Created my first web application using PHP
 2. MySQL database system
